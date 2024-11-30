@@ -1,9 +1,14 @@
-# 2-Distributed Computing
+# LaCDiS: LAN-based Client-server Distributed WordCount System with C
 
-Mô phỏng tính toán phân tán sử dụng 2 máy tính đếm từ.
+A project to simulate a distributed word count system using C programming language. 
 
+We created a simple distributed word count system using the client-server model. The server divides the data into two parts and sends one part to the client for processing through LAN communication and a client-server program written in C.The client counts the number of words in the data and sends the result back to the server. The server combines the results from the client and the server itself to get the final result.
 
-Quá trình thực hiện của mô phỏng cho nhiều máy khách:
+The project was developed for the course "Computer Network" at Hanoi University of Science and Technology. Main purpose of the project is to understand the basic concepts of network programming and the client-server model. Another goal is to understand the basic concepts of distributed systems and the mechanism of data division and combination in distributed systems thorugh MapReduce algorithm.
+
+## Process
+
+The process of the simulation for multiple clients:
 
 ```
                 :   ... (more) ...    :
@@ -22,47 +27,44 @@ ______          |    _______          |               _______
                         
 *: Process in server.
 ```
+To simulate the distributed word count system, you need two computers: one for the server and one for the client. Perform the following steps:
 
-Để thực hiện mô phỏng cần sử dụng 2 máy tính: một máy cho máy chủ và một máy đóng vai trò máy khách. Thực hiện các bước như sau:
-
-Sao chép mã nguồn trong thư mục `src` vào máy chủ và khách tương ứng với thư mục `src/server` và `src/client` kèm theo `Makefile`. Khi ở 2 máy tính mô phỏng đã có mã nguồn, thực hiện biên dịch chương trình như sau.
+Copy the source code in the `src` directory to the server and client corresponding to the `src/server` and `src/client` directories with the `Makefile`. When the source code is available on the two simulation computers, compile the program as follows.
 
 ### Makefile
 
 ```bash
-## Nếu sử dụng make trên các hệ điều hành linux
-# Ở máy chủ
+## If you are using make on Linux
+# On the server
 make server
-# Ở máy khách
+# On the client
 make client
 
-## Nếu sử dụng mingw32-make thì tương tự
-# Ở máy chủ
+## If you are using mingw32-make
+# On the server
 mingw32-make server
-# Ở máy khách
+# On the client
 mingw32-make client
 ```
 
-Sau khi thực hiện biên dịch xong, thực hiện mô phỏng sẽ bắt đầu từ phía máy khách (máy khách đang rỗi và chờ đợi được giao việc).
-
-
+After compiling, the simulation will start from the client side (the client is idle and waiting to be assigned a task).
 
 
 
 ### Client
 
-Ở phía máy khách, các tác vụ để xử lý được điều khiển bởi `control` do đó chỉ cần gọi
+On the client side, the tasks to be processed are controlled by `control`, so just call
 
 ```bash
 ./control SERVER_IP
 # Ex: ./control 192.168.2.110
 ```
 
-và chờ đợi việc nhận dữ liệu, tính toán, gửi trả kết quả hoàn tất.
+and wait for the data to be received, processed, and sent back to the server.
 
 ### Server
 
-Các tác vụ để thực hiện mô phỏng được điều khiển bởi `control_program` ở máy chủ. Để bắt đầu chạy
+The tasks to be processed in the simulation are controlled by `control_program` on the server. To start running
 
 ```bash
 ./control_program
@@ -70,13 +72,13 @@ Các tác vụ để thực hiện mô phỏng được điều khiển bởi `c
 #     Enter the name of the input file: ../../data/fulltext.txt
 ```
 
-Khi chương trình điều khiển chạy, bạn sẽ được hỏi về đường dẫn của tệp văn bản sử dụng trong mô phỏng đếm từ này. Sau khi nhập đường dẫn đến tệp, chương trình sẽ bắt đầu chia dữ liệu thành 2 phần và gửi cho máy khách một phần dữ liệu đồng thời máy chủ cũng thực hiện tính toán đếm từ và chờ kết quả trả về từ máy khách.
+When the control program is running, you will be asked for the path to the text file used in this word count simulation. After entering the path to the file, the program will start dividing the data into 2 parts and send one part of the data to the client while the server also performs word count calculations and waits for the result to return from the client.
 
-### Các chương trình xử lý
+### Processing programs
 
-#### `data-divide` - Chia dữ liệu
+#### `data-divide` - Data division
 
-Chia dữ liệu thành hai nửa với số lượng từ xấp xỉ nhau.
+Split the data into two parts with approximately the same number of words.
 
 ```bash
 ./data-divide INPUT OUTPUT1 OUTPUT2
@@ -87,7 +89,7 @@ Chia dữ liệu thành hai nửa với số lượng từ xấp xỉ nhau.
 
 #### `combine` - Hợp nhất dữ liệu
 
-Gộp kết quả tính toán từ các máy tính.
+Combine the calculation results from multiple computers.
 
 ```bash
 ./combine INPUT1 INPUT2 OUTPUT
@@ -96,9 +98,9 @@ Gộp kết quả tính toán từ các máy tính.
 
 
 
-#### `wordcount` - Đếm từ
+#### `wordcount` - Words count
 
-Đếm số lượng xuất hiện của mỗi từ có trong tệp văn bản.
+Count the number of occurrences of each word in the text file.
 
 ```bash
 ./wordcount INPUT OUTPUT
@@ -107,9 +109,9 @@ Gộp kết quả tính toán từ các máy tính.
 
 
 
-#### `client` - Nhận và gửi tệp từ phía khách 
+#### `client` - Receive and send files from the client side
 
-Cầu nối truyền tệp giữa máy chủ và khách với cơ chế: tệp gửi lỗi sẽ được gửi lại cho tới khi thành công; kết nối với máy chủ thất bại sẽ thử kết nối lại sau một khoảng thời gian.
+The file transfer bridge between the server and the client with the mechanism: the error sending file will be resent until successful; connection to the server fails will try to reconnect after a period of time.
 
 ```bash
 ./client send FILENAME [SERVER_IP]
@@ -120,9 +122,9 @@ Cầu nối truyền tệp giữa máy chủ và khách với cơ chế: tệp g
 
 
 
-#### `server` - Nhận và gửi tệp từ phía máy chủ
+#### `server` - Receive and send files from the server side
 
-Cầu nối truyền tệp giữa máy chủ và khách.
+The file transfer bridge between the server and the client.
 
 ```bash
 ./server send FILENAME
